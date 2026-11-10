@@ -1,0 +1,22 @@
+name: PS Vita VPK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: vitasdk/vitasdk:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compilar
+        run: |
+          cmake -B build-vita
+          cmake --build build-vita
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: padsounds-vpk
+          path: build-vita/padsounds.vpk
