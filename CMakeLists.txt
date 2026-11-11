@@ -16,10 +16,31 @@ if(VITA)
 
   add_executable(padsounds main.c)
   target_include_directories(padsounds PRIVATE "$ENV{VITASDK}/arm-vita-eabi/include/SDL2")
+  # SDL2_mixer de vdpm se compila con varios codecs (opus, modplug, xmp...).
+  # Se enlazan solo los que existan en el SDK para no fallar por nombres.
+  set(AUDIO_LIBS "")
+  foreach(lib opusfile opus modplug xmp xmp-lite vorbisfile vorbis vorbisenc ogg mpg123 FLAC)
+    find_library(AUDIOLIB_${lib} NAMES ${lib}
+      PATHS "$ENV{VITASDK}/arm-vita-eabi/lib"
+      NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    if(AUDIOLIB_${lib})
+      list(APPEND AUDIO_LIBS ${AUDIOLIB_${lib}})
+    else()
+      message(STATUS "Libreria de audio no encontrada (se omite): ${lib}")
+    endif()
+  endforeach()
+
+  # SDL2 en Vita usa vitaGL; el grupo evita problemas de orden entre .a
   target_link_libraries(padsounds
-    SDL2_mixer SDL2 vorbisfile vorbis ogg mpg123 FLAC m
+    SDL2_mixer
+    -Wl,--start-group
+    ${AUDIO_LIBS}
+    SDL2 vitaGL vitashark mathneon stdc++ m
+    SceShaccCg_stub SceKernelDmacMgr_stub SceIme_stub
+    SceAppMgr_stub SceAppUtil_stub ScePower_stub SceProcessmgr_stub
     SceAudio_stub SceAudioIn_stub SceCtrl_stub SceDisplay_stub SceGxm_stub
-    SceHid_stub SceMotion_stub SceTouch_stub SceCommonDialog_stub SceSysmodule_stub)
+    SceHid_stub SceMotion_stub SceTouch_stub SceCommonDialog_stub SceSysmodule_stub
+    -Wl,--end-group)
 
   vita_create_self(padsounds.self padsounds UNSAFE)
 
