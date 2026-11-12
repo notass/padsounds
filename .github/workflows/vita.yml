@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Listar librerias del SDK (para depurar)
+        run: ls /usr/local/vitasdk/arm-vita-eabi/lib | grep -Ei 'sdl|opus|xmp|modplug|vorbis|ogg|mpg123|flac|vita|shark|neon|shacc' || true
+
       - name: Compilar
         run: |
           cmake -B build-vita
