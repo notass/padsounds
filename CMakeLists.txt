@@ -36,7 +36,7 @@ if(VITA)
     -Wl,--start-group
     ${AUDIO_LIBS}
     SDL2 vitaGL vitashark mathneon stdc++ m
-    SceShaccCg_stub SceKernelDmacMgr_stub SceIme_stub
+    SceShaccCg_stub SceShaccCgExt taihen_stub SceKernelDmacMgr_stub SceIme_stub
     SceAppMgr_stub SceAppUtil_stub ScePower_stub SceProcessmgr_stub
     SceAudio_stub SceAudioIn_stub SceCtrl_stub SceDisplay_stub SceGxm_stub
     SceHid_stub SceMotion_stub SceTouch_stub SceCommonDialog_stub SceSysmodule_stub
